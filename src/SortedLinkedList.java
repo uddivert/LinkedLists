@@ -48,6 +48,7 @@ public class SortedLinkedList {
         catch (FileNotFoundException e) {
             System.out.println("Try Block : FileNotFoundException : " + e.getMessage());
         } // catch     
+        Arrays.sort(csvArray);
         return csvArray;
     } // createCsvArray
 
