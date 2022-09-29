@@ -3,6 +3,14 @@ import java.io.FileNotFoundException;
 import java.nio.file.*;
 import java.util.Scanner;
 
+/*
+ * Steps to create the SortedLinkedList
+ * 1) use the constructor to create the sorted linked list
+ * 2) call readCsv()
+ * 3) call create CsvArray()
+ * 4) intialize() which will create the linkedlist
+ */
+
 public class SortedLinkedList {
     public static String data;
     private NodeType head;
@@ -15,23 +23,13 @@ public class SortedLinkedList {
     public SortedLinkedList(Scanner stdIn, String csvPath){
         this.stdIn = stdIn;
         this.csvPath = csvPath;
+        //this.readCsvFile(csvPath);
+        this.initalize(readCsvFile(csvPath); //pipes csvfile into initalize
     }
 
-    public void readCsvFile(String csvPath) {
-        int csvCounter= 0;
-        try {
-              File configFile = new File(csvPath);
-              Scanner configScanner = new Scanner(configFile);
-
-              while (configScanner.hasNextInt()) {
-                  csvCounter ++;
-                 System.out.println(" counter : " + csvCounter + " : " + configScanner.nextInt());
-              }
-        } catch (FileNotFoundException e) {
-            System.out.println("Try Block : FileNotFoundException : " + e.getMessage());
-        }     
-    }
-
+    /**
+     * Creates csv array from csv path
+     */
     public int[] createCsvArray(String csvPath) {
         int[] csvArray = new int[csvCounter];//fix array size - ASN
         try {
@@ -39,15 +37,25 @@ public class SortedLinkedList {
               Scanner configScanner = new Scanner(configFile);
 
               while (configScanner.hasNextInt()) {
+                  csvCounter ++;
+              } // while
+              while (configScanner.hasNextInt()) {
                   csvArray[csvCounter] = configScanner.nextInt();
                   csvCounter ++;
-              }
-        } 
+              } // while
+        }  // try
         catch (FileNotFoundException e) {
             System.out.println("Try Block : FileNotFoundException : " + e.getMessage());
-        }     
+        } // catch     
         return csvArray;
-    }
+    } // createCsvArray
+
+    /**
+     * sets nodes and stuff
+     */
+    private initalize(int [] inCsvArray) {
+
+    } //initalize
 
     public SortedLinkedList() {
         //using the compareTo method(ItemType), we can sort our list using the Next(NodeType method) - ASN
