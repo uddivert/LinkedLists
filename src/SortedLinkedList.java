@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.*;
 import java.util.Scanner;
+import NodeType; 
 
 /*
  * Steps to create the SortedLinkedList
@@ -54,7 +55,18 @@ public class SortedLinkedList {
      * sets nodes and stuff
      */
     private initalize(int [] inCsvArray) {
-
+        head = new NodeType(new ItemType(inCsvArray[0]));
+        currentPos = head;
+        for (int i = 1; i < inCsvArray.length; i++) {
+            if (i == inCsvArray.length -1) {
+                currentPos.next(null);
+                return;
+            } else {
+                Node nextNode = new NodeType(new ItemType(inCsvArray[i]));
+                currentPos.next(nextNode);
+                currentPos = nextNode;
+            } // else 
+        } // for
     } //initalize
 
     public SortedLinkedList() {
