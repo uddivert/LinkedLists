@@ -70,12 +70,24 @@ public class SortedLinkedList {
     } //initalize
 
     public int getLength() {
-        //use a loop and add up the number of time we can go Next? - ASN
-        
+        return csvArray.length;
     }
     
     public void insertItem(ItemType item) {
-        //same method as creating the list, just reorganize the nodes to include new variable - ASN
+        NodeType newNode = new NodeType(item);
+        currentPos = head;
+        for (int i = 0; i < getLength; i ++) {
+            if(currentPos.info.compareTo(item) == -1) {
+                currentPos = currentPos.next(currentPos);
+            } if(currentPos.info.compareTo(item) == 0) {
+                NodeType tempNode = currentPos.next(currentPos);
+                currentPos.next(newNode);
+                newNode.next(tempNode);
+            } else {
+                NodeType tempNode = currentPos.next(currentPos);
+                currentPos.next(newNode);
+                newNode.next(tempNode);
+            } // else
     }
     
     public void deleteItem(ItemType item) {
