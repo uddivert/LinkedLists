@@ -24,8 +24,7 @@ public class SortedLinkedList {
     public SortedLinkedList(Scanner stdIn, String csvPath){
         this.stdIn = stdIn;
         this.csvPath = csvPath;
-        //this.readCsvFile(csvPath);
-        this.initalize(readCsvFile(csvPath); //pipes csvfile into initalize
+        this.initalize(createCsvArray(csvPath); //pipes csvfile into initalize
     }
 
     /**
@@ -70,10 +69,6 @@ public class SortedLinkedList {
         } // for
     } //initalize
 
-    public SortedLinkedList() {
-        //using the compareTo method(ItemType), we can sort our list using the Next(NodeType method) - ASN
-    }
-    
     public int getLength() {
         //use a loop and add up the number of time we can go Next? - ASN
         
