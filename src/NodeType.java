@@ -15,5 +15,12 @@ public class NodeType {
     public next(NodeType nextOne) {
         nextOne = next;
     }// next
+
+    /**
+     * returns next node
+     */
+    public getNext() {
+        return next;
+    } // getNext
 }
 
