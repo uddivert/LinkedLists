@@ -1,3 +1,4 @@
+//SortedLinkedList.java
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.*;
@@ -34,26 +35,36 @@ public class SortedLinkedList {
      * Creates csv array from csv path
      */
     public int[] createCsvArray(String csvPath) {
-        csvArray = new int[csvCounter];
-        try {
-              File configFile = new File(csvPath);
-              Scanner configScanner = new Scanner(configFile);
-
-              while (configScanner.hasNextInt()) {
-                  csvCounter ++;
-              } // while
-              while (configScanner.hasNextInt()) {
-                  csvArray[csvCounter] = configScanner.nextInt();
-                  csvCounter ++;
-              } // while
-        }  // try
-        catch (FileNotFoundException e) {
-            System.out.println("Try Block : FileNotFoundException : " + e.getMessage());
-        } // catch     
-        Arrays.sort(csvArray);
-        removeDuplicates(csvArray);
-        return csvArray;
-    } // createCsvArray
+        String fileContent;
+        int numOfRows = 0;
+        // arraylist to store strings
+            List<String> listOfStrings = new ArrayList<String>();
+            
+            try {
+                  File configFile = new File(csvPath);
+                  Scanner scannedFileContent = new Scanner(configFile);
+                  
+               // checking end of file
+                  while (scannedFileContent.hasNext()) {
+                 fileContent = scannedFileContent.next();
+                 numOfRows ++; 
+                      // adding each string to arraylist
+                      listOfStrings.add(fileContent);
+                  }
+                  
+                  csvArray = new int[listOfStrings.size()];
+                  
+                  for (int i = 0; i < csvArray.length; i++) {
+                 csvArray[i] = Integer.parseInt(listOfStrings.get(i));
+                  }
+            }  // try
+            catch (FileNotFoundException e) {
+                System.out.println("Try Block : FileNotFoundException : " + e.getMessage());
+            } // catch     
+            Arrays.sort(csvArray);
+            removeDuplicates(csvArray, csvArray.length);
+            return csvArray;
+        } // createCsvArray
 
     /**
      * sets nodes and stuff
@@ -62,17 +73,18 @@ public class SortedLinkedList {
     private void initialize(int [] inCsvArray) {
         head = new NodeType(new ItemType(inCsvArray[0]));
         currentPos = head;
-        for (int i = 1; i < inCsvArray.length; i++) {
-            if (i == inCsvArray.length -1) {
-                currentPos.next(null);
+        
+        for (int i = 1; i <= inCsvArray.length; i++) {
+            if (i == inCsvArray.length) {
+                currentPos.setNext(null);
                 return;
             } else {
                 NodeType nextNode = new NodeType(new ItemType(inCsvArray[i]));
-                currentPos.next(nextNode);
+                currentPos.setNext(nextNode);
                 currentPos = nextNode;
             } // else 
         } // for
-    } //initalize
+    } //initialize
 
     public int getLength() {
         return csvArray.length;
@@ -81,91 +93,103 @@ public class SortedLinkedList {
     /**
      * sets currentPosition to the next Node
      */
-    public void next() {
+    public void goNext() {
         currentPos = currentPos.getNext();
     } // next
 
     
     public void insertItem(ItemType item) {
-        private int[] newCsvArray = new int[csvArray.length +1];
-        if(searchItem(item) == -1) {
-            System.out.println("Sorry. You cannot insert the duplicate item");    
-        }  
-        else if (getLength() == 0) { // if length is zero
-            NodeType newNode = new NodeType(item);
-            head = newNode;
-            currentPos = head;
-            newCsvArray[0] = item.getValue();
-        } else if(searchItem(item == 1) { // if first item in list
-            NodeType newNode = new NodeType(item);
-            newNode.next(head);
-            head = newNode;
-            newCsvArray[0] = item.getValue;
-            for (int i = 0; i < getLength; i ++) {
-                newCsvArray[i+1] = csvArray[i];
+        int index = 1;
+        if (searchItem(item) != -1) {   //NAGIREDDI
+                System.out.println("Sorry. You cannot insert the duplicate item");
+                System.out.println("The list is: " + toString());
+        } else {
+            // find index for new node that needs to be added
+            for (int i = 0; i < csvArray.length; i ++) {
+                if(csvArray[i] < item.getValue()) {
+                    index ++;
+                }
             }
-        } else { // general case
-            NodeType newNode = new NodeType(item);
-            currentPos = head;
-            for (int i = 0; i < getLength(); i ++) {
-                if(currentPos.info.compareTo(item) == -1) {
-                    this.next();
-                    newCsvArray[i] = csvArray[i];
-                } if(currentPos.info.compareTo(item) == 0) {
-                    Nodetype nextItem = currentPos.getNext();
-                    currentPos.next(newNode);
-                    newNode.next(nextItem);
-                    newCsvArray[i] = item.getValue;
+            // create a newNode for item we need to add  
+                NodeType newNode = new NodeType(item);
+
+                if (head == null) {  // If no head exists
+                    head = newNode;
                 } else {
-                    Nodetype nextItem = currentPos.getNext();
-                    currentPos.next(newNode);
-                    newNode.next(nextItem);
-                    newCsvArray[i] = item.getValue;
-                } // else
-            }//for
-            csvArray = newCsvArray;
-        }// else
-    }//insertItem
+                    if (index == 1) { // if new node should be the first one..head
+                    newNode.setNext(head); // this will link new node as the first node to head
+                            head = newNode;
+                    } else { // if new node should be added to anywhere in the sorted list
+                        NodeType current = head;
+                        NodeType temp = null;
+                    
+                        while (current != null && current.info.getValue() < newNode.info.getValue()) {
+                        temp = current;
+                        current = current.getNext();
+                        }
+                        temp.setNext(newNode);
+                        newNode.setNext(current);
+                    }
+                }
+                // display the list after new node is added
+                displayLinkedList();
+        }
+    }
+
+    public void displayLinkedList() {
+        String newString ="";
+        if (head == null) {
+            System.out.println("The list is empty.");
+        }
+        NodeType current = head;
+        int counter = 0;
+        while (current != null) {
+            newString = newString + current.info.getValue() + " ";
+            current = current.getNext();
+            counter++;
+        }
+        
+        int[] temp = new int[counter];
+        current = head;
+        
+        for(int i = 0; i < counter; i++) {
+            temp[i] = current.info.getValue();
+            current = current.getNext();
+        }
+        
+        csvArray = temp;
+        
+        System.out.println("New list: " + newString );
+    }
     
-    public void deleteItem(ItemType item) {
-        if(searchItem(item) == -1) { // nonexistent item
+    public void deleteItem(ItemType item) { 
+        int index = searchItem(item);
+        if(index == -1) { // nonexistent item
             System.out.println("Item not found");
-        }  
-        else if (getLength() == 0) { // empty list
-            System.out.println("You cannot delete from an empty list");
-        } else if (getLength() == 1) { // only item
-            private int[] newCsvArray = new int[0];
-            head == null;
-            csvArray = newCsvArray;
-        } else if (searchItem(item) == 1) {
-            private int[] newCsvArray = new int[getLength() - 1];
-            NodeType tempNode = head.getNext();
-            head == tempNode;
-            for (int i = 0; i < getLength; i ++) {
-                if (i == 0) {
-                    // do nothing
-                } else { 
-                    newCsvArray[i-1] = csvArray[i];
-                } // else
-            } // for
-            csvArray = newCsvArray;
-        } else { // general
-            currentPos = head;
-            int i = 0;
-            while (next() ! = null) {
-                private int[] newCsvArray = new int[getLength() - 1];
-                if(currentpos.info.compareto(item) == 0) {
-                    currentPos.next(this.next().next());
-                } // if
-                newCsvArray[i] = currentPos.item.getValue();
-            } // while
-            csvArray = newCsvArray;
-        } // else
-    }//deleteItem
+        } 
+        else {
+            if (index == 0) { // if 0 index to be deleted, move the head to next position
+                head = head.getNext();
+            } 
+            else {
+               NodeType previous = head; // first position is assigned to previous
+               int count = 1;
+               while (count < index) {
+                   //move one position right and assign it to previous variable
+                   previous = previous.getNext();
+                   count++;
+               }
+               NodeType current = previous.getNext();
+               previous.setNext(current.getNext());
+            }
+        
+        }
+        displayLinkedList();
+    }
     
     public int searchItem(ItemType item) {
-        for (int i = 0; i < getLength; i ++) {
-            if (item.getValue == csvArray[i]) {
+        for (int i = 0; i < getLength(); i ++) {
+            if (item.getValue() == csvArray[i]) {
                 return i;
             } // if 
         } // for 
@@ -173,17 +197,25 @@ public class SortedLinkedList {
     }//searchItem
     
     public ItemType getNextItem() {
-        next();
+        goNext();
         if (currentPos == null) {
-            System.out.println("The end of the list has been reached");
-        return currentPos.item;
+            System.out.println("The end of the list has been reached"); 
+            resetList();
+        }
+        return currentPos.info;
     }//getNextItem
     
     public void resetList() {
         // set currentPos to null, somehow
-        currentPos = null;
+        currentPos.setNext(head);;
+        head = null;
+        int [] temp = new int[0];
+        csvArray = temp;
     }//resetList
     
+    /**
+     * This is O(n) = n
+     */
     public void mergeList() {
         //loop insertItem and we should be good - ASN
         //Or scan what is entered, put it into new array, combine it with csvArray, and re-initialize
@@ -203,9 +235,10 @@ public class SortedLinkedList {
         }//for
         
         String newListPrint = "The list 2: ";
+        Arrays.sort(newLineArray);
         
         for (int i = 0; i < listLength; i++) {
-            newListPrint.equals(newListPrint + newLineArray[i] + " ");
+            newListPrint = newListPrint + newLineArray[i] + " ";
         }
         
         System.out.println(newListPrint);
@@ -219,44 +252,75 @@ public class SortedLinkedList {
         }
         
         Arrays.sort(mergedArray);
-        csvArray = removeDuplicates(mergedArray);
+        csvArray = removeDuplicates(mergedArray, mergedArray.length);
         initialize(csvArray);
         System.out.println("Merged list: " + toString());
     }//mergeList
     
-    public int[] removeDuplicates(int[] arr) {
-        int end = arr.length;
-
-        for (int i = 0; i < end; i++) {
-            for (int j = i + 1; j < end; j++) {
-                if (arr[i] == arr[j]) {                  
-                    /*int shiftLeft = j;
-                    for (int k = j+1; k < end; k++, shiftLeft++) {
-                        arr[shiftLeft] = arr[k];
-                    }*/
-                    arr[j] = arr[end-1];
-                    end--;
-                    j--;
-                }//if
-            }//for
-        }//for
-
-        int[] whitelist = new int[end];
-        /*for(int i = 0; i < end; i++){
-            whitelist[i] = arr[i];
-        }*/
-        System.arraycopy(arr, 0, whitelist, 0, end);
-        return whitelist;
+    public int[] removeDuplicates(int[] arr, int n) {
+        if (n == 0 || n == 1) {
+            return arr;
+        }
+ 
+        // creating another array for only storing
+        // the unique elements
+        int[] temp = new int[n];
+        int j = 0;
+ 
+        for (int i = 0; i < n - 1; i++) {
+            if (arr[i] != arr[i + 1]) {
+                temp[j++] = arr[i];
+            }
+        }
+ 
+        temp[j++] = arr[n - 1];
+ 
+        // Changing the original array
+        for (int i = 0; i < j; i++) {
+            arr[i] = temp[i];
+        }
+ 
+        int[] filler = new int[j];
+        for(int i = 0; i < filler.length; i++) {
+            filler[i] = arr[i]; 
+        }
+        
+        return filler;  
+        
     }//removeDuplicates
     
+    /**
+     * This is O(n) = n
+     */
     public void deleteAlternate() {
         //loop deleteItem and we should be good - ASN
-        resetList();
-        for(int i = 0; i < getLength(); i = i + 2) {
-            deleteItem(getNextItem());
+        //resetList();
+        /*
+        int temp []; 
+        if (csvArray.length % 2 == 0) {
+            temp = new int [getLength() /2];
+        } else {
+            temp = new int[getLength() + 1];
+        } // else
+        for(int i = 0; i < temp.length; i++) {
+            temp[i] = csvArray[i+2];
+        }
+        System.out.println("New shit");
+        for (int i : temp) {
+            System.out.print(i + " ");
+        } // for
+        */
+        currentPos = head;
+        while (currentPos.getNext() != null) {
+            goNext();
+            deleteItem(currentPos.info);
+            goNext();
         }
     }//deleteAlternate
     
+    /**
+     * Has a O(n)= n^2
+     */
     public void Intersection() {
         //Looping a similar pattern from searchItem and compareTo should be helpful - ASN
         Scanner scanLength = new Scanner(System.in);
@@ -274,13 +338,23 @@ public class SortedLinkedList {
         }//for
         
         String newListPrint = "The list 2: ";
+        Arrays.sort(newLineArray);
         
         for (int i = 0; i < listLength; i++) {
-            newListPrint.equals(newListPrint + newLineArray[i] + " ");
+            newListPrint = newListPrint + newLineArray[i] + " ";
         }
-        
         System.out.println(newListPrint);
+        System.out.print("Intersection");
+        for (int i = 0; i < csvArray.length; i ++) {
+            for (int j = 0; j < newLineArray.length; j ++) {
+                if (csvArray[i] == newLineArray[j]) {
+                    System.out.print(newLineArray[j] + " ");
+                } // if
+            } // for
+        } // for
+        System.out.println("");
         
+       /* 
         int[] mergedArray = new int[listLength + getLength()];
         for(int i = 0; i < listLength; i++) {
             mergedArray[i] = newLineArray[i];
@@ -294,24 +368,31 @@ public class SortedLinkedList {
         int[] intersected = new int[mergedArray.length];
         int interCount = 0;
         
-        for (int i = 0; i < mergedArray.length; i++) {
-            for (int j = i + 1 ; j < mergedArray.length; j++) {
+        /*for (int i = 0; i < mergedArray.length; i++) {
+            for (int j = 0; j < mergedArray.length; j++) {
                  if (mergedArray[i] == mergedArray[j]) {
                        intersected[interCount] = mergedArray[i];
                        interCount++;
                  }
             }
+        }*/
+        /*
+        int[] interValue = new int[interCount];
+        for(int i = 0; i < interCount; i++) {
+            interValue[i] = mergedArray[i];
         }
-        csvArray = intersected;
+        
+        csvArray = interValue;
         initialize(csvArray);
         System.out.println("Intersection of lists: " + toString());
+        */
         
     }//Intersection
     
     public String toString() {
         String toString = "";
         for(int i = 0; i < getLength(); i++) {
-            toString.equals(toString + csvArray[i] + " ");
+            toString = toString + csvArray[i] + " ";
         }//for
         return toString;
     }//toString

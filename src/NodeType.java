@@ -1,3 +1,4 @@
+//NodeType.java
 public class NodeType {
     public ItemType info;
     public NodeType next;
@@ -6,20 +7,22 @@ public class NodeType {
      * Constructor for NodeType
      */
     public NodeType(ItemType item) {
-        item = info;
+        info = new ItemType(item.getValue());
     }
 
     /**
      * This will set the next Node
+     * @return 
      */
-    public next(NodeType nextOne) {
-        nextOne = next;
+    public void setNext(NodeType nextOne) {
+        next = nextOne;
     }// next
 
     /**
      * returns next node
+     * @return 
      */
-    public getNext() {
+    public NodeType getNext() {
         return next;
     } // getNext
 }
